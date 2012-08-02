@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
-from module import quote, talk
+from module import quote, talk, url
 
 import subprocess
 import lib.irclib as irclib
@@ -86,6 +86,8 @@ class Bewbot(ircbot.SingleServerIRCBot):
                     self.modules[cmd].run(srv, chan, msgs[1:])
                 except:
                     pass
+        else:
+            url.parser(srv, chan, msg)
 
     def on_privmsg(self, srv, evt):
         """Method called when an user talk to the bot"""
