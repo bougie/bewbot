@@ -37,7 +37,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
             if mod == 'talk':
                 self.modules[mod] = talk.Talk()
             elif mod == 'quote':
-                self.modules[mod] = quote.Quote()
+                self.modules[mod] = quote.Quote(self.chans)
 
     def on_welcome(self, srv, evt):
         """Connected to the server"""
@@ -70,13 +70,18 @@ class Bewbot(ircbot.SingleServerIRCBot):
         chan = evt.target()
         msg = evt.arguments()[0]
 
-        print chan + ' <' + pseudo + '>' + msg
+        print chan + ' <' + pseudo + '> ' + msg
         
         if msg[0] == '!':
-            if msg[1:] == "quit":
+            cmd = msg[1:].split(' ')[0]
+            
+            if cmd == "quit":
                 if pseudo in self.adminsuser:
                     srv.disconnect()
                     self.die()
+            elif cmd in self.modules:
+                msgs = msg.split(' ')
+                self.modules[cmd].run(srv, chan, msgs[1:])
 
     def on_privmsg(self, srv, evt):
         """Method called when an user talk to the bot"""
@@ -87,6 +92,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
         cmd = msgs[0]
         if cmd[0] == '!':
             cmd = cmd[1:]
+            
             if cmd in self.modules:
                 if self.modules[cmd].admin() == True and pseudo in self.adminsuser or self.modules[cmd].admin() == False:
                     self.modules[cmd].run(srv, msgs[1:])
@@ -97,7 +103,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
 def main():
     servers = [("roubaix2.fr.epiknet.org", 6667)]
     pseudo = "gridania"
-    chan = ["#hugland", "#LePaysDesZarbis"]
+    chan = ["#hugland"]
     admins = ['bougie']
     modules = ['quote', 'talk']
 
