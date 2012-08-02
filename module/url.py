@@ -15,8 +15,7 @@ def parser(srv, chan, line):
             
             if len(content) > 0:
                 obj2 = re.search('<title>(.*)</title>', content, flags=re.IGNORECASE | re.DOTALL | re.UNICODE)
-                
-                print "[TITLE] - " + obj2.group(1)
+
                 if obj2 != None:
                     t = obj2.group(1).split("\n")
                     title = ""
@@ -24,6 +23,6 @@ def parser(srv, chan, line):
                     for x in t:
                         title = title + " " + x.strip()
 
-                    srv.privmsg(chan, '[TITLE] - ' + title)
+                    srv.privmsg(chan, '[TITLE] -' + title)
         except:
-            print "url - try error"
+            pass
