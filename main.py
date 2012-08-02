@@ -54,6 +54,15 @@ class Bewbot(ircbot.SingleServerIRCBot):
         if pseudo == self.pseudo:
             srv.action(chan, "is in da place")
 
+    def on_kick(self, srv, evt):
+        """Method called when a user was kicked"""
+        
+        pseudo = evt.arguments()[0]
+        chan = evt.target()
+        
+        if pseudo == self.pseudo:
+            srv.join(chan)
+
     def on_pubmsg(self, srv, evt):
         """Method called when a public message arrives in a channel"""
         
