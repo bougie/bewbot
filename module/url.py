@@ -11,14 +11,13 @@ def parser(srv, chan, line):
     
     if obj != None:
         try:
-            print "url - " + obj.group(1)
             content = urllib2.urlopen(obj.group(1)).read()
             
             if len(content) > 0:
                 obj2 = re.search('<title>(.*)</title>', content, flags=re.IGNORECASE | re.DOTALL | re.UNICODE)
                 
-                print "title - " + obj2.group(1)
+                print "[TITLE] - " + obj2.group(1)
                 if obj2 != None:
-                    srv.privmsg(chan, '[TITLE] - ' + obj2.group(1))
+                    srv.privmsg(chan, '[TITLE] - ' + obj2.group(1).replace("\n", " "))
         except:
             print "url - try error"
