@@ -81,7 +81,11 @@ class Bewbot(ircbot.SingleServerIRCBot):
                     self.die()
             elif cmd in self.modules:
                 msgs = msg.split(' ')
-                self.modules[cmd].run(srv, chan, msgs[1:])
+                
+                try:
+                    self.modules[cmd].run(srv, chan, msgs[1:])
+                except:
+                    pass
 
     def on_privmsg(self, srv, evt):
         """Method called when an user talk to the bot"""

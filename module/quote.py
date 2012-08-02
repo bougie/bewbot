@@ -34,22 +34,25 @@ class Quote:
     def add(self, chan, txt):
         ret = ""
 
-        try:
-            filehdl = open(file, 'a')
+        if len(txt) > 0:
+            try:
+                filehdl = open(file, 'a')
 
-            if chan in self.quotes:
-                self.quotes[chan].append(txt)
-                filehdl.write(chan + ' ' + txt + "\n")
-                
-                ret = "Quote ajoutée avec succés"
-            else:
-                ret = "Erreur lors de l'ajout de la quote - chan non reconnu"
+                if chan in self.quotes:
+                    self.quotes[chan].append(txt)
+                    filehdl.write(chan + ' ' + txt + "\n")
+                    
+                    ret = "Quote ajoutée avec succés"
+                else:
+                    ret = "Erreur lors de l'ajout de la quote - chan non reconnu"
 
-            filehdl.close()
-        except:
-            ret = "Erreur lors de l'ajout de la quote"
-        finally:
-            return ret
+                filehdl.close()
+            except:
+                ret = "Erreur lors de l'ajout de la quote"
+        else:
+            ret = "Quote vide"
+        
+        return ret
 
     def get(self, chan):
         if chan in self.quotes:
