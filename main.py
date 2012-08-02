@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
+from module import quote, talk
+
 import subprocess
 import lib.irclib as irclib
 import lib.ircbot as ircbot
-from module import *
 
 pub_command_list = ['quote']
 priv_command_list = ['quit']
@@ -32,7 +33,11 @@ class Bewbot(ircbot.SingleServerIRCBot):
             "Bot ultrasupra awesome")
             
     def load_modules(self, list):
-        pass
+        for mod in list:
+            if mod == 'talk':
+                self.modules[mod] = talk.Talk()
+            elif mod == 'quote':
+                self.modules[mod] = quote.Quote()
 
     def on_welcome(self, srv, evt):
         """Connected to the server"""
@@ -59,10 +64,23 @@ class Bewbot(ircbot.SingleServerIRCBot):
         print chan + ' <' + pseudo + '>' + msg
         
         if msg[0] == '!':
-            if msg[1] == "quit":
+            if msg[1:] == "quit":
                 if pseudo in self.adminsuser:
                     srv.disconnect()
                     self.die()
+
+    def on_privmsg(self, srv, evt):
+        """Method called when an user talk to the bot"""
+        
+        pseudo = irclib.nm_to_n(evt.source())
+        msgs = evt.arguments()[0].split(' ')
+        
+        cmd = msgs[0]
+        if cmd[0] == '!':
+            cmd = cmd[1:]
+            if cmd in self.modules:
+                if self.modules[cmd].admin() == True and pseudo in self.adminsuser or self.modules[cmd].admin() == False:
+                    self.modules[cmd].run(srv, msgs[1:])
 
 #
 # Program main function
@@ -70,11 +88,11 @@ class Bewbot(ircbot.SingleServerIRCBot):
 def main():
     servers = [("roubaix2.fr.epiknet.org", 6667)]
     pseudo = "gridania"
-    chan = ["#hugland"]
+    chan = ["#hugland", "#LePaysDesZarbis"]
     admins = ['bougie']
-    modules = ['quote']
+    modules = ['quote', 'talk']
 
-    Bewbot bot = Bewbot(servers, chan, pseudo, admins)
+    bot = Bewbot(servers, chan, pseudo, admins)
     
     bot.load_modules(modules)
     bot.start()
