@@ -18,6 +18,12 @@ def parser(srv, chan, line):
                 
                 print "[TITLE] - " + obj2.group(1)
                 if obj2 != None:
-                    srv.privmsg(chan, '[TITLE] - ' + obj2.group(1).replace("\n", " "))
+                    t = obj2.group(1).split("\n")
+                    title = ""
+                    
+                    for x in t:
+                        title = title + " " + x.strip()
+
+                    srv.privmsg(chan, '[TITLE] - ' + title)
         except:
             print "url - try error"
