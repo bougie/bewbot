@@ -7,18 +7,9 @@ import subprocess
 import lib.irclib as irclib
 import lib.ircbot as ircbot
 
-pub_command_list = ['quote']
-priv_command_list = ['quit']
-
-def command_exists(list, name):
-    for cmd in pub_command_list:
-        if name == name:
-            return True
-            
-    return False
-
-def can_exec(cmd, pseudo):
-    return True
+alias = dict()
+alias['getquote'] = 'quote get'
+alias['addquote'] = 'quote add'
 
 class Bewbot(ircbot.SingleServerIRCBot):
     def __init__(self, servers, chans, pseudo, admins):
@@ -74,6 +65,10 @@ class Bewbot(ircbot.SingleServerIRCBot):
         
         if msg[0] == '!':
             cmd = msg[1:].split(' ')[0]
+
+            if cmd in alias:
+                msg = msg.replace(cmd, alias[cmd])
+                cmd = msg[1:].split(' ')[0]
             
             if cmd == "quit":
                 if pseudo in self.adminsuser:
