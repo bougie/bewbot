@@ -2,6 +2,7 @@
 
 import os
 import random
+import time
 
 file = 'quotes.txt'
 
@@ -9,6 +10,7 @@ class Quote:
     def __init__(self, chans):
         self.quotes = dict()
         self.chans = chans
+        self.used = dict()
         
         self.load()
 
@@ -37,18 +39,34 @@ class Quote:
         
     def addChan(self, chan):
         self.quotes[chan] = []
+        self.used[chan] = dict()
     
     def admin(self):
         return True
 
     def get(self, chan):
         if chan in self.quotes:
-            if len(self.quotes[chan]) < 2:
-                i = 0
-            else:
-                i = random.randint(0, len(self.quotes[chan]) - 1)
+            if len(self.used[chan]) == len(self.quotes[chan]):
+                self.used[chan] = dict()
+                    
+            while True:
+                if len(self.quotes[chan]) < 2:
+                    i = 0
+                else:
+                    i = random.randint(0, len(self.quotes[chan]) - 1)
+                    
+                if i not in self.used[chan].values():
+                    break
             
             try:
+                currTimestamp = time.time()
+
+                oldTimestamp = currTimestamp - len(self.quotes[chan])
+                for usedIdTimestamp in self.used[chan].keys():
+                    if usedIdTimestamp < oldTimestamp:
+                        del self.used[chan][usedIdTimestamp]
+                
+                self.used[chan][currTimestamp] = i
                 return self.quotes[chan][i]
             except:
                 return ""
@@ -60,6 +78,7 @@ class Quote:
 
         for chan in self.chans:
             self.quotes[chan] = []
+            self.used[chan] = dict()
         
         try:
             if os.path.exists(file) == False:
