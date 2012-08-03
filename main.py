@@ -100,8 +100,8 @@ class Bewbot(ircbot.SingleServerIRCBot):
             cmd = cmd[1:]
             
             if cmd in self.modules:
-                if self.modules[cmd].admin() == True and pseudo in self.adminsuser or self.modules[cmd].admin() == False:
-                    self.modules[cmd].run(srv, msgs[1:])
+                if self.modules[cmd].admin() == True and pseudo in self.adminsuser:
+                    self.modules[cmd].runAdmin(srv, pseudo, msgs[1:])
 
 #
 # Program main function

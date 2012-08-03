@@ -3,11 +3,11 @@
 class Talk:
     def __init__(self):
         pass
-        
+
     def admin(self):
         return True
 
-    def run(self, srv, msg):
+    def runAdmin(self, srv, pseudo, msg):
         chan = msg[0]
         
         if chan[0] == '#':

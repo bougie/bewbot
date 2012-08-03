@@ -9,26 +9,7 @@ class Quote:
     def __init__(self, chans):
         self.quotes = dict()
         
-        for chan in chans:
-            self.quotes[chan] = []
-        
-        try:
-            if os.path.exists(file) == False:
-                hdl = open(file, 'a+')
-                hdl.write('')
-                hdl.close()
-            
-            filehdl = open(file, 'r')
-            filehdl.seek(0)
-            for qt in filehdl:
-                c = qt.split(' ')
-
-                if c[0] in chans:
-                    self.quotes[c[0]].append(" ".join(c[1:]))
-
-            filehdl.close()
-        except:
-            print '[QUOTE] Erreur ouverture fichier'
+        self.load()
 
     def add(self, chan, txt):
         ret = ""
@@ -52,6 +33,9 @@ class Quote:
             ret = "Quote vide"
         
         return ret
+    
+    def admin(self):
+        return True
 
     def get(self, chan):
         if chan in self.quotes:
@@ -66,6 +50,30 @@ class Quote:
                 return ""
         else:
             return ""
+    
+    def load(self):
+        self.quotes = dict()
+
+        for chan in chans:
+            self.quotes[chan] = []
+        
+        try:
+            if os.path.exists(file) == False:
+                hdl = open(file, 'a+')
+                hdl.write('')
+                hdl.close()
+            
+            filehdl = open(file, 'r')
+            filehdl.seek(0)
+            for qt in filehdl:
+                c = qt.split(' ')
+
+                if c[0] in chans:
+                    self.quotes[c[0]].append(" ".join(c[1:]))
+
+            filehdl.close()
+        except:
+            print '[QUOTE] Erreur ouverture fichier'
             
     def run(self, srv, chan, txt):
         if txt[0] == 'get':
@@ -77,3 +85,7 @@ class Quote:
             ret = self.add(chan, " ".join(txt[1:]))
 
             srv.privmsg(chan, ret)
+    
+    def runAdmin(self, srv, pseudo, txt):
+        if txt[0] == 'reload':
+            self.load()
