@@ -8,6 +8,7 @@ file = 'quotes.txt'
 class Quote:
     def __init__(self, chans):
         self.quotes = dict()
+        self.chans = chans
         
         self.load()
 
@@ -33,6 +34,9 @@ class Quote:
             ret = "Quote vide"
         
         return ret
+        
+    def addChan(self, chan):
+        self.quotes[chan] = []
     
     def admin(self):
         return True
@@ -54,7 +58,7 @@ class Quote:
     def load(self):
         self.quotes = dict()
 
-        for chan in chans:
+        for chan in self.chans:
             self.quotes[chan] = []
         
         try:
@@ -68,7 +72,7 @@ class Quote:
             for qt in filehdl:
                 c = qt.split(' ')
 
-                if c[0] in chans:
+                if c[0] in self.chans:
                     self.quotes[c[0]].append(" ".join(c[1:]))
 
             filehdl.close()

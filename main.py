@@ -99,6 +99,22 @@ class Bewbot(ircbot.SingleServerIRCBot):
         if cmd[0] == '!':
             cmd = cmd[1:]
             
+            if pseudo in self.adminsuser:
+                if cmd == 'join':
+                    if len(msgs[1]) > 0:
+                        self.chans.append(msgs[1])
+                        srv.join(msgs[1])
+                        
+                        if 'quote' in self.modules:
+                            self.modules['quote'].addChan(msgs[1])
+                elif cmd == 'pseudo':
+                    if len(msgs[1]) > 0:
+                        try:
+                            srv.nick(msgs[1]);
+                            self.pseudo = msgs[1]
+                        except:
+                            pass
+            
             if cmd in self.modules:
                 if self.modules[cmd].admin() == True and pseudo in self.adminsuser:
                     self.modules[cmd].runAdmin(srv, pseudo, msgs[1:])
@@ -109,7 +125,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
 def main():
     servers = [("roubaix2.fr.epiknet.org", 6667)]
     pseudo = "gridania"
-    chan = ["#hugland"]
+    chan = ["#hugland", "#LePaysDesZarbis"]
     admins = ['bougie']
     modules = ['quote', 'talk']
 
