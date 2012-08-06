@@ -78,7 +78,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
                 msgs = msg.split(' ')
                 
                 try:
-                    self.modules[cmd].run(srv, chan, msgs[1:])
+                    self.modules[cmd].run(srv, chan, pseudo, msgs[1:])
                 except:
                     pass
         else:

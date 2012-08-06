@@ -3,6 +3,7 @@
 import os
 import random
 import time
+import re
 
 file = 'quotes.txt'
 
@@ -44,30 +45,60 @@ class Quote:
     def admin(self):
         return True
 
-    def get(self, chan):
+    def get(self, chan, args):
         if chan in self.quotes:
             if len(self.used[chan]) == len(self.quotes[chan]):
                 self.used[chan] = dict()
-                    
-            while True:
-                if len(self.quotes[chan]) < 2:
-                    i = 0
+            
+            if "qid" in args:
+                if args["qid"] > 0:
+                    i = args["qid"] - 1
                 else:
-                    i = random.randint(0, len(self.quotes[chan]) - 1)
-                    
-                if i not in self.used[chan].values():
-                    break
+                    i = -1
+            else:
+                run = True
+                
+                if "regexp" in args:
+                    nb = 0
+                    while run:
+                        if len(self.quotes[chan]) < 2:
+                            i = 0
+                            run = False
+                        else:
+                            i = random.randint(0, len(self.quotes[chan]) - 1)
+                            
+                            ret = re.search(args["regexp"], self.quotes[chan][i])
+                            if ret != None:
+                                run = False
+                            elif nb == len(self.quotes[chan]):
+                                i = -1
+                                run = False
+                        nb += 1
+                else:
+                    while run:
+                        if len(self.quotes[chan]) < 2:
+                            i = 0
+                        else:
+                            i = random.randint(0, len(self.quotes[chan]) - 1)
+                            
+                        if i not in self.used[chan].values():
+                            run = False
             
             try:
-                currTimestamp = time.time()
+                if i != -1:
+                    if "qid" not in args:
+                        currTimestamp = time.time()
 
-                oldTimestamp = currTimestamp - len(self.quotes[chan])
-                for usedIdTimestamp in self.used[chan].keys():
-                    if usedIdTimestamp < oldTimestamp:
-                        del self.used[chan][usedIdTimestamp]
-                
-                self.used[chan][currTimestamp] = i
-                return self.quotes[chan][i]
+                        oldTimestamp = currTimestamp - len(self.quotes[chan])
+                        for usedIdTimestamp in self.used[chan].keys():
+                            if usedIdTimestamp < oldTimestamp:
+                                del self.used[chan][usedIdTimestamp]
+                        
+                        self.used[chan][currTimestamp] = i
+
+                    return "[" + str(i + 1) + "] " + self.quotes[chan][i]
+                else:
+                    return ""
             except:
                 return ""
         else:
@@ -98,9 +129,17 @@ class Quote:
         except:
             print '[QUOTE] Erreur ouverture fichier'
             
-    def run(self, srv, chan, txt):
+    def run(self, srv, chan, pseudo, txt):
         if txt[0] == 'get':
-            ret = self.get(chan)
+            args = dict()
+
+            if len(txt) > 1: #We have some extra arguments like quote ID or regexp
+                if re.search('^[0-9]$', txt[1]) != None:
+                    args["qid"] = int(txt[1])
+                else:
+                    args["regexp"] = txt[1]
+
+            ret = self.get(chan, args)
             
             if len(ret) > 0:
                 srv.privmsg(chan, ret)
@@ -108,6 +147,12 @@ class Quote:
             ret = self.add(chan, " ".join(txt[1:]))
 
             srv.privmsg(chan, ret)
+        elif txt[0] == 'list':
+            if chan in self.quotes:
+                i = 1
+                for qt in self.quotes[chan]:
+                    srv.privmsg(pseudo, "[" + str(i) + "] " + qt)
+                    i += 1
     
     def runAdmin(self, srv, pseudo, txt):
         if txt[0] == 'reload':
