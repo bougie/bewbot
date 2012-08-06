@@ -10,6 +10,7 @@ import lib.ircbot as ircbot
 alias = dict()
 alias['getquote'] = 'quote get'
 alias['addquote'] = 'quote add'
+alias['listquote'] = 'quote list'
 
 class Bewbot(ircbot.SingleServerIRCBot):
     def __init__(self, servers, chans, pseudo, admins):
