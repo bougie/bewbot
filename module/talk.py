@@ -7,7 +7,7 @@ class Talk:
     def admin(self):
         return True
 
-    def runAdmin(self, srv, pseudo, msg):
+    def runAdmin(self, srv, chan, pseudo, msg):
         chan = msg[0]
         
         if chan[0] == '#':
