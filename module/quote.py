@@ -26,7 +26,7 @@ class Quote:
                     self.quotes[chan].append(txt)
                     filehdl.write(chan + ' ' + txt + "\n")
                     
-                    ret = "Quote ajoutée avec succés"
+                    ret = "Quote ajoutée avec succés (#" + str(len(self.quotes[chan])) + ")"
                 else:
                     ret = "Erreur lors de l'ajout de la quote - chan non reconnu"
 
