@@ -91,13 +91,15 @@ class Bewbot(ircbot.SingleServerIRCBot):
         
         pseudo = irclib.nm_to_n(evt.source())
         chan = evt.target()
-        msgs = evt.arguments()[0].split(' ')
+        msgs = evt.arguments()[0]
         
         print chan + ' <' + pseudo + '> ' + msgs
         for p in self.redirpvlist:
             if p != pseudo:
                 if self.redirpvlist[p] == True:
                     srv.privmsg(p, '<' + pseudo + '> ' + msgs)
+        
+        msgs = evt.arguments()[0].split(' ')
         
         cmd = msgs[0]
         if cmd[0] == '!':
@@ -121,9 +123,11 @@ class Bewbot(ircbot.SingleServerIRCBot):
                 elif cmd == 'addredirpv':
                     if pseudo not in self.redirpvlist:
                         self.redirpvlist[pseudo] = True
+                        srv.privmsg(pseudo, "Redirection ajoutee")
                 elif cmd == 'rmredirpv':
                     if pseudo in self.redirpvlist:
                         self.redirpvlist[pseudo] = False
+                        srv.privmsg(pseudo, "Redirection supprimee")
             
             if cmd in self.modules:
                 if self.modules[cmd].admin() == True and pseudo in self.adminsuser:
