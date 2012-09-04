@@ -89,6 +89,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
         """Method called when an user talk to the bot"""
         
         pseudo = irclib.nm_to_n(evt.source())
+        chan = evt.target()
         msgs = evt.arguments()[0].split(' ')
         
         cmd = msgs[0]
@@ -113,7 +114,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
             
             if cmd in self.modules:
                 if self.modules[cmd].admin() == True and pseudo in self.adminsuser:
-                    self.modules[cmd].runAdmin(srv, pseudo, msgs[1:])
+                    self.modules[cmd].runAdmin(srv, chan, pseudo, msgs[1:])
 
 #
 # Program main function
