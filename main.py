@@ -93,10 +93,10 @@ class Bewbot(ircbot.SingleServerIRCBot):
         chan = evt.target()
         msgs = evt.arguments()[0].split(' ')
         
+        print chan + ' <' + pseudo + '> ' + msg
         for p in self.redirpvlist:
             if self.redirpvlist[p] == True:
                 srv.privmsg(p, '<' + pseudo + '> ' + msg)
-                print chan + ' <' + pseudo + '> ' + msg
         
         cmd = msgs[0]
         if cmd[0] == '!':
