@@ -18,6 +18,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
         self.chans = chans
         self.pseudo = pseudo
         self.modules = dict()
+        self.redirpvlist = dict()
 
         ircbot.SingleServerIRCBot.__init__(self,
             servers,
@@ -92,6 +93,11 @@ class Bewbot(ircbot.SingleServerIRCBot):
         chan = evt.target()
         msgs = evt.arguments()[0].split(' ')
         
+        for p in self.redirpvlist:
+            if self.redirpvlist[p] == True:
+                srv.privmsg(p, '<' + pseudo + '> ' + msg)
+                print chan + ' <' + pseudo + '> ' + msg
+        
         cmd = msgs[0]
         if cmd[0] == '!':
             cmd = cmd[1:]
@@ -111,6 +117,12 @@ class Bewbot(ircbot.SingleServerIRCBot):
                             self.pseudo = msgs[1]
                         except:
                             pass
+                elif cmd == 'addredirpv':
+                    if pseudo not in self.redirpvlist:
+                        self.redirpvlist[pseudo] = True
+                elif cmd == 'rmredirpv':
+                    if pseudo in self.redirpvlist:
+                        self.redirpvlist[pseudo] = False
             
             if cmd in self.modules:
                 if self.modules[cmd].admin() == True and pseudo in self.adminsuser:
