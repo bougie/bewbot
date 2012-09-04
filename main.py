@@ -123,7 +123,7 @@ def main():
     servers = [("roubaix2.fr.epiknet.org", 6667)]
     pseudo = "gridania"
     chan = ["#hugland", "#LePaysDesZarbis"]
-    admins = ['bougie']
+    admins = ['bougie', 'Bougie']
     modules = ['quote', 'talk']
 
     bot = Bewbot(servers, chan, pseudo, admins)
