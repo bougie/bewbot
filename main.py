@@ -121,7 +121,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
 def main():
     servers = [("roubaix2.fr.epiknet.org", 6667)]
     pseudo = "gridania"
-    chan = ["#hugland", "#LePaysDesZarbis"]
+    chan = ["#fubar"]
     admins = ['bougie']
     modules = ['quote', 'talk']
 

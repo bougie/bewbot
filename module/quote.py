@@ -134,7 +134,7 @@ class Quote:
             args = dict()
 
             if len(txt) > 1: #We have some extra arguments like quote ID or regexp
-                if re.search('^[0-9]$', txt[1]) != None:
+                if re.search('^[0-9]+$', txt[1]) != None:
                     args["qid"] = int(txt[1])
                 else:
                     args["regexp"] = txt[1]
