@@ -29,6 +29,6 @@ def parser(srv, chan, line):
                         else:
                             title = title + " " + x.strip()
 
-                    srv.privmsg(chan, '[Link Info] title :' + title)
+                    srv.privmsg(chan, '[Link Info] title : ' + title)
         except:
             pass
