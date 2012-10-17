@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
-from module import quote, talk, url
+from module import quote, talk, url, note
 
 import subprocess
 import lib.irclib as irclib
@@ -11,6 +11,10 @@ alias = dict()
 alias['getquote'] = 'quote get'
 alias['addquote'] = 'quote add'
 alias['listquote'] = 'quote list'
+
+alias['addnote'] = 'note add'
+alias['delnote'] = 'note del'
+alias['listnote'] = 'note list'
 
 class Bewbot(ircbot.SingleServerIRCBot):
     def __init__(self, servers, chans, pseudo, admins):
@@ -31,6 +35,8 @@ class Bewbot(ircbot.SingleServerIRCBot):
                 self.modules[mod] = talk.Talk()
             elif mod == 'quote':
                 self.modules[mod] = quote.Quote(self.chans)
+			elif mod == 'note':
+				self.modules[mod] = note.Note()
 
     def on_welcome(self, srv, evt):
         """Connected to the server"""
@@ -138,10 +144,10 @@ class Bewbot(ircbot.SingleServerIRCBot):
 #
 def main():
     servers = [("roubaix2.fr.epiknet.org", 6667)]
-    pseudo = "gridania"
-    chan = ["#hugland", "#LePaysDesZarbis"]
+    pseudo = "gridaniaroxeuse"
+    chan = ["#hugland"]
     admins = ['bougie', 'Bougie']
-    modules = ['quote', 'talk']
+    modules = ['quote', 'talk', 'note']
 
     bot = Bewbot(servers, chan, pseudo, admins)
     
