@@ -35,8 +35,8 @@ class Bewbot(ircbot.SingleServerIRCBot):
                 self.modules[mod] = talk.Talk()
             elif mod == 'quote':
                 self.modules[mod] = quote.Quote(self.chans)
-			elif mod == 'note':
-				self.modules[mod] = note.Note()
+            elif mod == 'note':
+                self.modules[mod] = note.Note()
 
     def on_welcome(self, srv, evt):
         """Connected to the server"""
