@@ -16,6 +16,22 @@ alias['addnote'] = 'note add'
 alias['delnote'] = 'note del'
 alias['listnote'] = 'note list'
 
+class Users:
+    def __init__(self):
+        self.users = dict()
+
+    def init(self, chan, users):
+        print "------ {Users} : init[" + chan + "]"
+        print "=> " + str(users)
+
+        self.users[chan] = users
+
+    def update(self, chan, users):
+        print "------ {Users} : update[" + chan + "]"
+        print "=> " + str(users)
+
+        self.users[chan] = users
+
 class Bewbot(ircbot.SingleServerIRCBot):
     def __init__(self, servers, chans, pseudo, admins):
         self.adminsuser = admins
@@ -23,11 +39,18 @@ class Bewbot(ircbot.SingleServerIRCBot):
         self.pseudo = pseudo
         self.modules = dict()
         self.redirpvlist = dict()
+        self.users = Users()
 
         ircbot.SingleServerIRCBot.__init__(self,
             servers,
             pseudo,
             "Bot ultrasupra awesome")
+
+    def on_endofnames(self, ser, evt):
+        chan = evt.arguments()[0]
+
+        print "------ endofnames [" + chan + "]"
+        self.users.init(chan, self.channels[chan].users())
             
     def load_modules(self, list):
         for mod in list:
@@ -40,27 +63,51 @@ class Bewbot(ircbot.SingleServerIRCBot):
 
     def on_welcome(self, srv, evt):
         """Connected to the server"""
+
+        print "------ welcome"
         
         for chan in self.chans:
             srv.join(chan)
 
     def on_join(self, srv, evt):
         """Method called when a user join a chan"""
-        
+
         pseudo = irclib.nm_to_n(evt.source())
         chan = evt.target()
+
+        print "------ join [" + chan + "][" + pseudo + "]"
 		
         if pseudo == self.pseudo:
             srv.action(chan, "is in da place")
+        else:
+            self.users.update(chan, self.channels[chan].users())
+
+        for mod in self.modules:
+            try:
+                mod.on_join(srv, chan, pseudo, self.users)
+            except:
+                pass
 
     def on_kick(self, srv, evt):
         """Method called when a user was kicked"""
         
         pseudo = evt.arguments()[0]
         chan = evt.target()
+
+        print "------ kick [" + chan + "][" + pseudo + "]"
+
+        self.users.update(chan, self.channels[chan].users())
         
         if pseudo == self.pseudo:
             srv.join(chan)
+
+    def on_part(self, srv, evt):
+        pseudo = irclib.nm_to_n(evt.source())
+        chan = evt.target()
+
+        print "------ part [" + chan + "][" + pseudo + "]"
+
+        self.users.update(chan, self.channels[chan].users())
 
     def on_pubmsg(self, srv, evt):
         """Method called when a public message arrives in a channel"""
@@ -138,6 +185,14 @@ class Bewbot(ircbot.SingleServerIRCBot):
             if cmd in self.modules:
                 if self.modules[cmd].admin() == True and pseudo in self.adminsuser:
                     self.modules[cmd].runAdmin(srv, chan, pseudo, msgs[1:])
+
+    def on_quit(self, srv, evt):
+        pseudo = irclib.nm_to_n(evt.source())
+        chan = evt.target()
+
+        print "------ quit [" + chan + "][" + pseudo + "]"
+
+        self.users.update(chan, self.channels[chan].users())
 
 #
 # Program main function

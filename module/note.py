@@ -64,7 +64,7 @@ class Note:
 		else:
 			self.con = sqlite3.connect(db_file)
 			
-	def on_join(self, srv, chan, pseudo, connected_users)
+	def on_join(self, srv, chan, pseudo, connected_users):
 		pass
 		
 	def rm(self):
