@@ -13,7 +13,7 @@ class Note:
 		self.load()
 
 	def add(self, srv, chan, pseudo, txt):
-		print "------ ajout d'une note"
+		print "------ {Note} : ajout d'une note"
 
 		if len(txt) > 1:
 			curr = self.con.cursor()
@@ -39,14 +39,14 @@ class Note:
 		return True
 
 	def list(self, srv, chan):
-		print "------ liste des notes"
+		print "------ {Note} : liste des notes"
 
 		curr = self.con.cursor()
 		for row in curr.execute("SELECT * FROM notes WHERE n_chan = '" + chan + "'"):
 			print row
 		
 	def load(self):
-		print "------ Chargement des notes"
+		print "------ {Note} : Chargement des notes"
 		
 		if os.path.exists(db_file) == False:
 			self.con = sqlite3.connect(db_file)
@@ -68,7 +68,7 @@ class Note:
 		pass
 		
 	def rm(self):
-		print "------ Suppression d'une note"
+		print "------ {Note} : Suppression d'une note"
 		
 	def runAdmin(self, srv, chan, pseudo, txt):
 		run(self, srv, chan, pseudo, txt)

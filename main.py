@@ -49,7 +49,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
     def on_endofnames(self, ser, evt):
         chan = evt.arguments()[0]
 
-        print "------ endofnames [" + chan + "]"
+        print "------ {Bewbot} : endofnames [" + chan + "]"
         self.users.init(chan, self.channels[chan].users())
             
     def load_modules(self, list):
@@ -64,7 +64,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
     def on_welcome(self, srv, evt):
         """Connected to the server"""
 
-        print "------ welcome"
+        print "------ {Bewbot} : welcome"
         
         for chan in self.chans:
             srv.join(chan)
@@ -75,7 +75,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
         pseudo = irclib.nm_to_n(evt.source())
         chan = evt.target()
 
-        print "------ join [" + chan + "][" + pseudo + "]"
+        print "------ {Bewbot} : join[" + chan + "][" + pseudo + "]"
 		
         if pseudo == self.pseudo:
             srv.action(chan, "is in da place")
@@ -94,7 +94,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
         pseudo = evt.arguments()[0]
         chan = evt.target()
 
-        print "------ kick [" + chan + "][" + pseudo + "]"
+        print "------ {Bewbot} : kick[" + chan + "][" + pseudo + "]"
 
         self.users.update(chan, self.channels[chan].users())
         
@@ -105,7 +105,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
         pseudo = irclib.nm_to_n(evt.source())
         chan = evt.target()
 
-        print "------ part [" + chan + "][" + pseudo + "]"
+        print "------ {Bewbot} : part[" + chan + "][" + pseudo + "]"
 
         self.users.update(chan, self.channels[chan].users())
 
@@ -190,7 +190,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
         pseudo = irclib.nm_to_n(evt.source())
         chan = evt.target()
 
-        print "------ quit [" + chan + "][" + pseudo + "]"
+        print "------ {Bewbot} : quit[" + chan + "][" + pseudo + "]"
 
         self.users.update(chan, self.channels[chan].users())
 
