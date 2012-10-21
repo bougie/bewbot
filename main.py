@@ -46,7 +46,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
             pseudo,
             "Bot ultrasupra awesome")
 
-    def on_endofnames(self, ser, evt):
+    def on_endofnames(self, srv, evt):
         chan = evt.arguments()[0]
 
         print "------ {Bewbot} : endofnames [" + chan + "]"
