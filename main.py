@@ -188,11 +188,8 @@ class Bewbot(ircbot.SingleServerIRCBot):
 
     def on_quit(self, srv, evt):
         pseudo = irclib.nm_to_n(evt.source())
-        chan = evt.target()
 
-        print "------ {Bewbot} : quit[" + chan + "][" + pseudo + "]"
-
-        self.users.update(chan, self.channels[chan].users())
+        print "------ {Bewbot} : quit[][" + pseudo + "]"
 
 #
 # Program main function
