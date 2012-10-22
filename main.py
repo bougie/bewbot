@@ -2,6 +2,7 @@
 # -*- coding: utf8 -*-
 
 from module import quote, talk, url, note
+from mylib import users
 
 import subprocess
 import lib.irclib as irclib
@@ -16,22 +17,6 @@ alias['addnote'] = 'note add'
 alias['delnote'] = 'note del'
 alias['listnote'] = 'note list'
 
-class Users:
-    def __init__(self):
-        self.users = dict()
-
-    def init(self, chan, users):
-        print "------ {Users} : init[" + chan + "]"
-        print "=> " + str(users)
-
-        self.users[chan] = users
-
-    def update(self, chan, users):
-        print "------ {Users} : update[" + chan + "]"
-        print "=> " + str(users)
-
-        self.users[chan] = users
-
 class Bewbot(ircbot.SingleServerIRCBot):
     def __init__(self, servers, chans, pseudo, admins):
         self.adminsuser = admins
@@ -39,7 +24,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
         self.pseudo = pseudo
         self.modules = dict()
         self.redirpvlist = dict()
-        self.users = Users()
+        self.users = mylib.Users()
 
         ircbot.SingleServerIRCBot.__init__(self,
             servers,
