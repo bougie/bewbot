@@ -31,12 +31,16 @@ class Bewbot(ircbot.SingleServerIRCBot):
             "Bot ultrasupra awesome")
 
     def on_endofnames(self, srv, evt):
+		"""Methode appellee lors de la fin de la commande /names"""
+
         chan = evt.arguments()[0]
 
         print "------ {Bewbot} : endofnames [" + chan + "]"
         self.users.init(chan, self.channels[chan].users())
             
     def load_modules(self, list):
+		"""Chargement des modules utilises par le bot"""
+
         for mod in list:
             if mod == 'talk':
                 self.modules[mod] = talk.Talk()
@@ -46,7 +50,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
                 self.modules[mod] = note.Note()
 
     def on_welcome(self, srv, evt):
-        """Connected to the server"""
+        """Methode appellee une fois que le bot est connecte á un serveur"""
 
         print "------ {Bewbot} : welcome"
         
@@ -54,7 +58,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
             srv.join(chan)
 
     def on_join(self, srv, evt):
-        """Method called when a user join a chan"""
+        """Methode appellee lorsqu'un utilisateur join un canal"""
 
         pseudo = irclib.nm_to_n(evt.source())
         chan = evt.target()
@@ -73,7 +77,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
                 pass
 
     def on_kick(self, srv, evt):
-        """Method called when a user was kicked"""
+        """Methode appellee lorsqu'un utilisateur est kicke d'un canal"""
         
         pseudo = evt.arguments()[0]
         chan = evt.target()
@@ -86,6 +90,8 @@ class Bewbot(ircbot.SingleServerIRCBot):
             srv.join(chan)
 
     def on_part(self, srv, evt):
+        """Methode appellee lorsqu'un utilisateur /part d'un canal"""
+
         pseudo = irclib.nm_to_n(evt.source())
         chan = evt.target()
 
@@ -94,7 +100,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
         self.users.update(chan, self.channels[chan].users())
 
     def on_pubmsg(self, srv, evt):
-        """Method called when a public message arrives in a channel"""
+        """Methode appellee lorsqu'un message publique arrive sur un canal"""
         
         pseudo = irclib.nm_to_n(evt.source())
         chan = evt.target()
@@ -124,7 +130,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
             url.parser(srv, chan, msg)
 
     def on_privmsg(self, srv, evt):
-        """Method called when an user talk to the bot"""
+        """Methode appellee losque l'on parle en prive au bot"""
         
         pseudo = irclib.nm_to_n(evt.source())
         chan = evt.target()
@@ -171,6 +177,8 @@ class Bewbot(ircbot.SingleServerIRCBot):
                     self.modules[cmd].runAdmin(srv, chan, pseudo, msgs[1:])
 
     def on_quit(self, srv, evt):
+		"""Methode appellee lorsqu'un utilisateur quit le serveur"""
+
         pseudo = irclib.nm_to_n(evt.source())
 
         print "------ {Bewbot} : quit[][" + pseudo + "]"

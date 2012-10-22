@@ -13,6 +13,8 @@ class Note:
 		self.load()
 
 	def add(self, srv, chan, pseudo, txt):
+		"""Ajouter une note"""
+
 		print "------ {Note} : ajout d'une note"
 
 		if len(txt) > 1:
@@ -39,6 +41,8 @@ class Note:
 		return True
 
 	def list(self, srv, chan):
+		"""Lister les notes presentes dans la BDD"""
+
 		print "------ {Note} : liste des notes"
 
 		curr = self.con.cursor()
@@ -46,6 +50,8 @@ class Note:
 			print row
 		
 	def load(self):
+		"""Chargement de la bdd. Elle est cree si elle n;existe pas"""
+
 		print "------ {Note} : Chargement des notes"
 		
 		if os.path.exists(db_file) == False:
@@ -65,15 +71,23 @@ class Note:
 			self.con = sqlite3.connect(db_file)
 			
 	def on_join(self, srv, chan, pseudo, connected_users):
+		"""Commande(s) a effectuer lorsqu'un utilisateur join un chan"""
+
 		pass
 		
-	def rm(self):
+	def rm(self, id):
+		"""Supprimer une note"""
+
 		print "------ {Note} : Suppression d'une note"
 		
 	def runAdmin(self, srv, chan, pseudo, txt):
+		"""Methode principale d'administration"""
+
 		run(self, srv, chan, pseudo, txt)
 
 	def run(self, srv, chan, pseudo, txt):
+		"""Methode principale"""
+
 		cmd = txt[0]
 		
 		if cmd == 'list':
