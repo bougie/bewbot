@@ -68,7 +68,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
         if pseudo == self.pseudo:
             srv.action(chan, "is in da place")
         else:
-            self.users.update(chan, self.channels[chan].users())
+            self.users.add(chan, pseudo)
 
         for mod in self.modules:
             try:
@@ -84,7 +84,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
 
         print "------ {Bewbot} : kick[" + chan + "][" + pseudo + "]"
 
-        self.users.update(chan, self.channels[chan].users())
+        self.users.rm(chan, pseudo)
         
         if pseudo == self.pseudo:
             srv.join(chan)
@@ -97,7 +97,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
 
         print "------ {Bewbot} : part[" + chan + "][" + pseudo + "]"
 
-        self.users.update(chan, self.channels[chan].users())
+        self.users.rm(chan, pseudo)
 
     def on_pubmsg(self, srv, evt):
         """Methode appellee lorsqu'un message publique arrive sur un canal"""
@@ -179,6 +179,6 @@ class Bewbot(ircbot.SingleServerIRCBot):
     def on_quit(self, srv, evt):
 		"""Methode appellee lorsqu'un utilisateur quit le serveur"""
 
-        pseudo = irclib.nm_to_n(evt.source())
+        self.users.rm(None, pseudo)
 
         print "------ {Bewbot} : quit[][" + pseudo + "]"
