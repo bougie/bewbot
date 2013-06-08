@@ -16,7 +16,7 @@ class Quote:
         self.load()
 
     def add(self, chan, txt):
-		"""Ajouter une quote"""
+        """Ajouter une quote"""
 
         ret = ""
 
@@ -41,7 +41,7 @@ class Quote:
         return ret
         
     def addChan(self, chan):
-		"""Ajouter un chan afin d'y ajouter des quotes"""
+        """Ajouter un chan afin d'y ajouter des quotes"""
 
         self.quotes[chan] = []
         self.used[chan] = dict()
@@ -50,7 +50,7 @@ class Quote:
         return True
 
     def get(self, chan, args):
-		"""Recuperer une quote"""
+        """Recuperer une quote"""
 
         if chan in self.quotes:
             if len(self.used[chan]) == len(self.quotes[chan]):
@@ -111,7 +111,7 @@ class Quote:
             return ""
     
     def load(self):
-		"""Chargement du fichier de quotes"""
+        """Chargement du fichier de quotes"""
 
         self.quotes = dict()
 
@@ -138,7 +138,7 @@ class Quote:
             print '[QUOTE] Erreur ouverture fichier'
             
     def run(self, srv, chan, pseudo, txt):
-		"""Methode principale"""
+        """Methode principale"""
 
         if txt[0] == 'get':
             args = dict()
@@ -165,7 +165,7 @@ class Quote:
                     i += 1
     
     def runAdmin(self, srv, pseudo, txt):
-		"""Methode principale d'administration"""
+        """Methode principale d'administration"""
 
         if txt[0] == 'reload':
             self.load()

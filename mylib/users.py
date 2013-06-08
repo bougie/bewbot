@@ -45,7 +45,7 @@ class Users:
 	def _rm(self, chan, pseudo):
 		pass
 
-    def update(self, chan, users):
+	def update(self, chan, users):
 		"""Mise á jour de la liste des utilisateur connectes"""
 
 		print "------ {Users} : update[" + chan + "]"

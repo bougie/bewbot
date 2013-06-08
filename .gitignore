@@ -2,3 +2,4 @@
 *.log
 quotes.txt
 data.db
+config.py

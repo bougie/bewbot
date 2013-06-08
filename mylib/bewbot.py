@@ -17,21 +17,21 @@ alias['delnote'] = 'note del'
 alias['listnote'] = 'note list'
 
 class Bewbot(ircbot.SingleServerIRCBot):
-    def __init__(self, servers, chans, pseudo, admins):
+    def __init__(self, server, chans, pseudo, admins):
         self.adminsuser = admins
         self.chans = chans
         self.pseudo = pseudo
         self.modules = dict()
         self.redirpvlist = dict()
-        self.users = mylib.Users()
+        self.users = users.Users()
 
         ircbot.SingleServerIRCBot.__init__(self,
-            servers,
+            [server],
             pseudo,
             "Bot ultrasupra awesome")
 
     def on_endofnames(self, srv, evt):
-		"""Methode appellee lors de la fin de la commande /names"""
+        """Methode appellee lors de la fin de la commande /names"""
 
         chan = evt.arguments()[0]
 
@@ -39,7 +39,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
         self.users.init(chan, self.channels[chan].users())
             
     def load_modules(self, list):
-		"""Chargement des modules utilises par le bot"""
+        """Chargement des modules utilises par le bot"""
 
         for mod in list:
             if mod == 'talk':
@@ -177,7 +177,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
                     self.modules[cmd].runAdmin(srv, chan, pseudo, msgs[1:])
 
     def on_quit(self, srv, evt):
-		"""Methode appellee lorsqu'un utilisateur quit le serveur"""
+        """Methode appellee lorsqu'un utilisateur quit le serveur"""
 
         self.users.rm(None, pseudo)
 

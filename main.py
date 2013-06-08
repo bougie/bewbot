@@ -2,21 +2,17 @@
 # -*- coding: utf8 -*-
 
 from mylib import bewbot
+import config
 
 #
 # Program main function
 #
 def main():
-	servers = [("roubaix2.fr.epiknet.org", 6667)]
-	pseudo = "gridaniaroxeuse"
-	chan = ["#hugland"]
-	admins = ['bougie', 'Bougie']
-	modules = ['quote', 'talk', 'note']
+	for srv in config.SERVERS:
+		bot = bewbot.Bewbot(srv["server"], srv["chans"], srv["pseudo"], srv["admins"])
 
-	bot = mylib.Bewbot(servers, chan, pseudo, admins)
-
-	bot.load_modules(modules)
-	bot.start()
+		bot.load_modules(srv["modules"])
+		bot.start()
 
 if __name__ == "__main__":
 	main()
