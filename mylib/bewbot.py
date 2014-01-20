@@ -66,7 +66,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
         print "------ {Bewbot} : join[" + chan + "][" + pseudo + "]"
 		
         if pseudo == self.pseudo:
-            srv.action(chan, "is in da place")
+            srv.action(chan, "à votre service depuis 1337 ans")
         else:
             self.users.add(chan, pseudo)
 

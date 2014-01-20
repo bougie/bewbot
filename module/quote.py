@@ -5,7 +5,7 @@ import random
 import time
 import re
 
-file = 'quotes.txt'
+import config
 
 class Quote:
     def __init__(self, chans):
@@ -22,6 +22,7 @@ class Quote:
 
         if len(txt) > 0:
             try:
+				file = os.path.join(config.QUOTE_DIR, 'quote_%s.txt' % (chan))
                 filehdl = open(file, 'a')
 
                 if chan in self.quotes:
@@ -120,20 +121,23 @@ class Quote:
             self.used[chan] = dict()
         
         try:
-            if os.path.exists(file) == False:
-                hdl = open(file, 'a+')
-                hdl.write('')
-                hdl.close()
-            
-            filehdl = open(file, 'r')
-            filehdl.seek(0)
-            for qt in filehdl:
-                c = qt.split(' ')
+			for chan in self.quotes:
+				file = os.path.join(config.QUOTE_DIR, 'quote_%s.txt' % (chan))
 
-                if c[0] in self.chans:
-                    self.quotes[c[0]].append(" ".join(c[1:]))
+				if os.path.exists(file) == False:
+					hdl = open(file, 'a+')
+					hdl.write('')
+					hdl.close()
+				
+				filehdl = open(file, 'r')
+				filehdl.seek(0)
+				for qt in filehdl:
+					c = qt.split(' ')
 
-            filehdl.close()
+					if c[0] in self.chans:
+						self.quotes[c[0]].append(" ".join(c[1:]))
+
+				filehdl.close()
         except:
             print '[QUOTE] Erreur ouverture fichier'
             

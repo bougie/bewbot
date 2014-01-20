@@ -50,7 +50,7 @@ class Note:
 			print row
 		
 	def load(self):
-		"""Chargement de la bdd. Elle est cree si elle n;existe pas"""
+		"""Chargement de la bdd. Elle est cree si elle n'existe pas"""
 
 		print "------ {Note} : Chargement des notes"
 		
