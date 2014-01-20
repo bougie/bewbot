@@ -179,6 +179,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
     def on_quit(self, srv, evt):
         """Methode appellee lorsqu'un utilisateur quit le serveur"""
 
+        pseudo = irclib.nm_to_n(evt.source())
         self.users.rm(None, pseudo)
 
         print "------ {Bewbot} : quit[][" + pseudo + "]"
