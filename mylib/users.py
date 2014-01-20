@@ -38,9 +38,9 @@ class Users:
 
 		if chan == None:
 			for ch in self.users.keys():
-				_rm(ch, pseudo)
+				self._rm(ch, pseudo)
 		else:
-			_rm(chan, pseudo)
+			self._rm(chan, pseudo)
 
 	def _rm(self, chan, pseudo):
 		pass
