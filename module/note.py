@@ -4,7 +4,9 @@ import os
 import sqlite3
 import time
 
-db_file = 'data.db'
+import config
+
+db_file = os.path.join(config.DATA_DIR, 'data.db')
 
 class Note:
 	def __init__(self):
