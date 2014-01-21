@@ -32,10 +32,13 @@ class Note:
 
 			print "------------ req : " + req
 
-			curr.execute(req)
-			self.con.commit()
+			try:
+				curr.execute(req)
+				self.con.commit()
 
-			srv.privmsg(chan, "Note ajoutée")
+				srv.privmsg(chan, "Note ajoutée")
+			except:
+				srv.privmsg(chan, "Note non ajoutée")
 		else:
 			print "------------ len : " + str(len(txt))
 

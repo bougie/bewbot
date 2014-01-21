@@ -7,7 +7,10 @@ class Users:
 	def add(self, chan, pseudo):
 		"""Ajoute un utilisateur á la liste des utilisateurs connectes"""
 
-		pass
+		if not chan in self.users.keys():
+			self.users[chan] = []
+
+		self.users[chan].append(pseudo)
 
 	def connected(self, chan, pseudo):
 		"""Regarde si un utilisateur est connecte ou non"""
@@ -43,7 +46,9 @@ class Users:
 			self._rm(chan, pseudo)
 
 	def _rm(self, chan, pseudo):
-		pass
+		if chan in self.users.keys():
+			if pseudo in self.users[chan]:
+				self.users[chan].remove(pseudo)
 
 	def update(self, chan, users):
 		"""Mise á jour de la liste des utilisateur connectes"""
