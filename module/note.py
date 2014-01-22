@@ -52,7 +52,7 @@ class Note:
 
 		curr = self.con.cursor()
 		for row in curr.execute("SELECT * FROM notes WHERE n_chan = '" + chan + "'"):
-			srv.privmsg(pseudo, str(row)
+			srv.privmsg(pseudo, str(row))
 		
 	def load(self):
 		"""Chargement de la bdd. Elle est cree si elle n'existe pas"""
