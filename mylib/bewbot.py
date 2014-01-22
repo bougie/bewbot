@@ -72,7 +72,7 @@ class Bewbot(ircbot.SingleServerIRCBot):
 
         for mod in self.modules:
             try:
-                mod.on_join(srv, chan, pseudo, self.users)
+                self.modules[mod].on_join(srv, chan, pseudo, self.users)
             except Exception, e:
                 print str(e)
                 continue
