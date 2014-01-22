@@ -73,8 +73,9 @@ class Bewbot(ircbot.SingleServerIRCBot):
         for mod in self.modules:
             try:
                 mod.on_join(srv, chan, pseudo, self.users)
-            except:
-                pass
+            except Exception, e:
+				print str(e)
+                continue
 
     def on_kick(self, srv, evt):
         """Methode appellee lorsqu'un utilisateur est kicke d'un canal"""
