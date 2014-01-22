@@ -78,7 +78,9 @@ class Note:
 	def on_join(self, srv, chan, pseudo, connected_users):
 		"""Commande(s) a effectuer lorsqu'un utilisateur join un chan"""
 
-		pass
+		curr = self.con.cursor()
+		for row in curr.execute("SELECT * FROM notes WHERE n_chan = '" + chan + "' AND n_pseudo_dst = '" + pseudo + "'"):
+			srv.privmsg(chan, row[5])
 		
 	def rm(self, id):
 		"""Supprimer une note"""
