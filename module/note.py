@@ -45,14 +45,14 @@ class Note:
 	def admin(self):
 		return True
 
-	def list(self, srv, chan):
+	def list(self, srv, chan, pseudo):
 		"""Lister les notes presentes dans la BDD"""
 
 		print "------ {Note} : liste des notes"
 
 		curr = self.con.cursor()
 		for row in curr.execute("SELECT * FROM notes WHERE n_chan = '" + chan + "'"):
-			print row
+			srv.privmsg(pseudo, str(row)
 		
 	def load(self):
 		"""Chargement de la bdd. Elle est cree si elle n'existe pas"""
@@ -98,7 +98,7 @@ class Note:
 		cmd = txt[0]
 		
 		if cmd == 'list':
-			self.list(srv, chan)
+			self.list(srv, chan, pseudo)
 		elif cmd == 'add':
 			if len(txt) > 1:
 				self.add(srv, chan, pseudo, txt[1:])
