@@ -4,13 +4,13 @@ import re
 import urllib2
 
 def parser(srv, chan, line):
-    obj = re.match('.*(http://(.+[a-zA-Z0-9/\._-]))\s.*', line, flags=re.DOTALL | re.UNICODE)
+    obj = re.match('.*(http[s]?://(.+[a-zA-Z0-9/\._-]))\s.*', line, flags=re.DOTALL | re.UNICODE)
     
     if obj == None:
-        obj = re.match('.*(http://(.+[a-zA-Z0-9/\._-]))$', line, flags=re.DOTALL | re.UNICODE)
+        obj = re.match('.*(http[s]?://(.+[a-zA-Z0-9/\._-]))$', line, flags=re.DOTALL | re.UNICODE)
     
     if obj == None:
-        obj = re.match('(http://(.+[a-zA-Z0-9/\._-]))$', line, flags=re.DOTALL | re.UNICODE)
+        obj = re.match('(http[s]?://(.+[a-zA-Z0-9/\._-]))$', line, flags=re.DOTALL | re.UNICODE)
     
     if obj != None:
         try:
