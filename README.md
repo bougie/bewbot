@@ -19,6 +19,9 @@ Les **notes** sont des messages affiche automatiquement lors qu'une personne joi
 #### Module Talk
 Le module **talk** permet de faire parler bewbot sur un canal.
 
+#### Module URL
+Le module **URL** permet d'afficher le titre des liens pastés dans le canal
+
 ### Administration
 L'administration de bewbot se fait via messages prives.
 
