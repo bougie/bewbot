@@ -14,7 +14,7 @@ def parser(srv, chan, line):
     
     if obj != None:
         try:
-            content = urllib2.urlopen(obj.group(1)).read()
+            content = urllib2.urlopen(url=obj.group(1), timeout=5).read()
             
             if len(content) > 0:
                 obj2 = re.search('<title>(.*)</title>', content, flags=re.IGNORECASE | re.DOTALL | re.UNICODE)
