@@ -30,8 +30,11 @@ def parser(srv, chan, line):
 						else:
 							title = title + " " + x.strip()
 
-					h = HTMLParser.HTMLParser()
-					title = h.unescape(title)
+					try:
+						h = HTMLParser.HTMLParser()
+						title = h.unescape(title)
+					except:
+						pass
 
 					srv.privmsg(chan, '[Link Info] title : ' + title)
 		except:
