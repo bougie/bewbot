@@ -1,4 +1,7 @@
-### Bewbot
+Bewbot
+======
+
+Bewbot est un bot IRC ecrit en python en utilisant la IRCLib.
 
 ### Utilisation
 
