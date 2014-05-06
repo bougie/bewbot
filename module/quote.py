@@ -4,172 +4,130 @@ import os
 import random
 import time
 import re
+import sqlite3
 
 import config
 
+db_file = os.path.join(config.DATA_DIR, 'dataq.db')
+
 class Quote:
-    def __init__(self, chans):
-        self.quotes = dict()
-        self.chans = chans
-        self.used = dict()
+	def __init__(self, chans):
+		self.conn = None
         
-        self.load()
+		self.load()
 
-    def add(self, chan, txt):
-        """Ajouter une quote"""
+	def add(self, srv, pseudo, chan, txt):
+		"""Add a new quote"""
 
-        ret = ""
+		print "------ {Quote} : Ajout d'une quote"
 
-        if len(txt) > 0:
-            try:
-                file = os.path.join(config.DATA_DIR, 'quote_%s.txt' % (chan))
-                filehdl = open(file, 'a')
+		if len(txt) > 0:
+			try:
+				date = str(time.time())
 
-                if chan in self.quotes:
-                    self.quotes[chan].append(txt)
-                    filehdl.write(chan + ' ' + txt + "\n")
-                    
-                    ret = "Quote ajoutée avec succès (#" + str(len(self.quotes[chan])) + ")"
-                else:
-                    ret = "Erreur lors de l'ajout de la quote - chan non reconnu"
+				req_id = "SELECT MAX(COALESCE(q_id, 0)) + 1 FROM quotes WHERE q_chan = '%s'" % (chan)
+				req = "INSERT INTO quotes VALUES (?, ?, ?, ?, ?)"
 
-                filehdl.close()
-            except:
-                ret = "Erreur lors de l'ajout de la quote"
-        else:
-            ret = "Quote vide"
-        
-        return ret
-        
-    def addChan(self, chan):
-        """Ajouter un chan afin d'y ajouter des quotes"""
+				curr = self.con.cursor()
 
-        self.quotes[chan] = []
-        self.used[chan] = dict()
-    
-    def admin(self):
-        return True
+				# Get a new quote ID
+				curr.execute(req_id)
+				id = curr.fetchone()[0]
+				if id == None:
+					id = 0
+				else:
+					id = int(id)
 
-    def get(self, chan, args):
-        """Recuperer une quote"""
+				# Insert a new quote
+				curr.execute(req, (id, chan, pseudo, date, txt))
+				self.con.commit()
 
-        if chan in self.quotes:
-            if len(self.used[chan]) == len(self.quotes[chan]):
-                self.used[chan] = dict()
+				srv.privmsg(chan, "Quote #%s ajoutée" % (int(id) + 1))
+			except Exception, e:
+				print str(e)
+				srv.privmsg(chan, "ERREUR: Quote non ajoutée")
+		else:
+			srv.privmsg(chan, "ERREUR: Quote non ajoutée")
+
+	def admin(self):
+		return False
+
+	def get(self, srv, chan, args):
+		"""Get a quote by an id, a search pattern or randomly"""
+
+		print "------ {Quote} : Recuperation d'une quote"
+
+		# Get a quote for a given ID
+		if "qid" in args and args['qid'] > 0:
+			req = "SELECT q_id, q_txt FROM quotes WHERE q_id = %s" % (args['qid'] - 1)
+		# Get a quote for a given search pattern
+		elif "regexp" in args:
+			req = "SELECT q_id, q_txt FROM quotes WHERE q_chan = '%s' AND q_txt GLOB '*%s*' ORDER BY RANDOM() LIMIT 1" % (chan, args['regexp'])
+		# Get a random quote
+		else:
+			req = "SELECT q_id, q_txt FROM quotes WHERE q_chan = '%s' ORDER BY RANDOM() LIMIT 1" % (chan)
+
+		try:
+			curr = self.con.cursor()
+			curr.execute(req)
+			row = curr.fetchone()
+
+			srv.privmsg(chan, "[%s] %s" % (int(row[0]) + 1, row[1]))
+		except Exception, e:
+			pass
+
+	def list(self, srv, pseudo, chan):
+		"""Print all quotes in a private message"""
+
+		print "------ {Quote} : Liste des quotes du chan %s" % (chan)
+
+		req = "SELECT q_id, q_txt FROM quotes WHERE q_chan = '%s'" % (chan)
+		try:
+			curr = self.con.cursor()
+			for row in curr.execute(req):
+				srv.privmsg(pseudo, "[%s] %s" % (int(row[0]) + 1, row[1]))
+		except Exception, e:
+			print str(e)
+			pass
+
+	def load(self):
+		"""Connection to the database. Create it if it does not exist"""
+
+		print "------ {Quote} : Chargement des quotes"
+			
+		if os.path.exists(db_file) == False:
+			self.con = sqlite3.connect(db_file)
+			curr = self.con.cursor()
+				
+			curr.execute('''CREATE TABLE quotes (
+				q_id int,
+				q_chan text,
+				q_pseudo text,
+				q_date text,
+				q_txt text,
+				PRIMARY KEY (q_id, q_chan))''')
+			self.con.commit()
+		else:
+			self.con = sqlite3.connect(db_file)
             
-            if "qid" in args:
-                if args["qid"] > 0:
-                    i = args["qid"] - 1
-                else:
-                    i = -1
-            else:
-                run = True
-                
-                if "regexp" in args:
-                    nb = 0
-                    while run:
-                        if len(self.quotes[chan]) < 2:
-                            i = 0
-                            run = False
-                        else:
-                            i = random.randint(0, len(self.quotes[chan]) - 1)
-                            
-                            ret = re.search(args["regexp"], self.quotes[chan][i])
-                            if ret != None:
-                                run = False
-                            elif nb == len(self.quotes[chan]):
-                                i = -1
-                                run = False
-                        nb += 1
-                else:
-                    while run:
-                        if len(self.quotes[chan]) < 2:
-                            i = 0
-                        else:
-                            i = random.randint(0, len(self.quotes[chan]) - 1)
-                            
-                        if i not in self.used[chan].values():
-                            run = False
-            
-            try:
-                if i != -1:
-                    if "qid" not in args:
-                        currTimestamp = time.time()
+	def run(self, srv, chan, pseudo, txt):
+		"""Main"""
 
-                        oldTimestamp = currTimestamp - len(self.quotes[chan])
-                        for usedIdTimestamp in self.used[chan].keys():
-                            if usedIdTimestamp < oldTimestamp:
-                                del self.used[chan][usedIdTimestamp]
-                        
-                        self.used[chan][currTimestamp] = i
+		if self.con == None:
+			return
 
-                    return "[" + str(i + 1) + "] " + self.quotes[chan][i]
-                else:
-                    return ""
-            except:
-                return ""
-        else:
-            return ""
-    
-    def load(self):
-        """Chargement du fichier de quotes"""
+		if txt[0] == 'get':
+			args = dict()
 
-        self.quotes = dict()
+			if len(txt) > 1: # We have some extra arguments like quote ID or regexp
+				if re.search('^[0-9]+$', txt[1]) != None:
+					args["qid"] = int(txt[1])
+				else:
+					args["regexp"] = txt[1]
 
-        for chan in self.chans:
-            self.quotes[chan] = []
-            self.used[chan] = dict()
-        
-        try:
-            for chan in self.quotes:
-                file = os.path.join(config.DATA_DIR, 'quote_%s.txt' % (chan))
+			ret = self.get(srv, chan, args)
 
-                if os.path.exists(file) == False:
-                    hdl = open(file, 'a+')
-                    hdl.write('')
-                    hdl.close()
-                
-                filehdl = open(file, 'r')
-                filehdl.seek(0)
-                for qt in filehdl:
-                    c = qt.split(' ')
-
-                    if c[0] in self.chans:
-                        self.quotes[c[0]].append(" ".join(c[1:]))
-
-                filehdl.close()
-        except:
-            print '[QUOTE] Erreur ouverture fichier'
-            
-    def run(self, srv, chan, pseudo, txt):
-        """Methode principale"""
-
-        if txt[0] == 'get':
-            args = dict()
-
-            if len(txt) > 1: #We have some extra arguments like quote ID or regexp
-                if re.search('^[0-9]+$', txt[1]) != None:
-                    args["qid"] = int(txt[1])
-                else:
-                    args["regexp"] = txt[1]
-
-            ret = self.get(chan, args)
-            
-            if len(ret) > 0:
-                srv.privmsg(chan, ret)
-        elif txt[0] == 'add':
-            ret = self.add(chan, " ".join(txt[1:]))
-
-            srv.privmsg(chan, ret)
-        elif txt[0] == 'list':
-            if chan in self.quotes:
-                i = 1
-                for qt in self.quotes[chan]:
-                    srv.privmsg(pseudo, "[" + str(i) + "] " + qt)
-                    i += 1
-    
-    def runAdmin(self, srv, pseudo, txt):
-        """Methode principale d'administration"""
-
-        if txt[0] == 'reload':
-            self.load()
+		elif txt[0] == 'add':
+			self.add(srv, pseudo, chan, " ".join(txt[1:]))
+		elif txt[0] == 'list':
+			self.list(srv, pseudo, chan)
